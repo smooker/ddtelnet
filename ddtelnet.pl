@@ -27,9 +27,10 @@ $t->prompt('/ #/');
 
 for (my $i=0;$i<=1953514584/1024;$i++) {
 	my @lines;
-	my $skip=$i*512;
+	my $bs=512*8;
+	my $skip=$i*$bs;
   print "SKIP:$skip\n";
-	@lines = $t->cmd(String => "dd if=/dev/sda bs=512 skip=$skip count=1 | hexdump -v -C", Cmd_remove_mode => 0, Prompt => '/~ #/');
+	@lines = $t->cmd(String => "dd if=/dev/sda bs=$bs skip=$skip count=1 | hexdump -v -C", Cmd_remove_mode => 0, Prompt => '/~ #/');
 #	print @lines;
 #~SKIP:13312
 #1+0 records in
@@ -42,7 +43,7 @@ for (my $i=0;$i<=1953514584/1024;$i++) {
 	foreach my $line (@lines) {
 		$cnt++;
 	  chomp $line;
-#		print "$line\n";
+		print "$line\n";
 
 	  if ( $line =~ /^1\+0\ records\ in$/ & $cnt == 1 ) {
     	print "$line\n";
@@ -66,7 +67,7 @@ for (my $i=0;$i<=1953514584/1024;$i++) {
     }
     if (  $line =~ m/^([0-9,a-f,A-F]{8})/ )  {
       print "$1 END $cnt\n";
-		  if ($cnt != 37) {
+		  if ($cnt != 261) {
 				die("vgz");
 			}
 #     print "BRAVOO\n";
