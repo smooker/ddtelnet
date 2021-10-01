@@ -3,9 +3,13 @@ use strict;
 use warnings;
 
 use Net::Telnet ();
-my $t = new Net::Telnet (Timeout => 999,
+my $t = new Net::Telnet (Timeout => 3,
+											Telnetmode => 0,
+											Binmode => 1,
 #											Dump_log => "vgz.log",
                       Prompt => '/ $/');
+
+$|++;
 
 my $host="192.168.77.102";
 my $username="admin";
@@ -19,13 +23,13 @@ $t->cmd("su");
 $t->cmd("admin");
 $t->prompt('/ #/');
 #1953514584  1k blocks
-$t->telnetmode(0);
+#$t->telnetmode(0);
 
-for (my $i=0;$i<=2000;$i++) {
+for (my $i=0;$i<=1953514584/1024;$i++) {
 	my @lines;
 	my $skip=$i*512;
   print "SKIP:$skip\n";
-	@lines = $t->cmd("dd if=/dev/sda bs=512 skip=$skip count=1 | hexdump -v -C");
+	@lines = $t->cmd(String => "dd if=/dev/sda bs=512 skip=$skip count=1 | hexdump -v -C", Cmd_remove_mode => 0, Prompt => '/~ #/');
 #	print @lines;
 #~SKIP:13312
 #1+0 records in
@@ -38,7 +42,7 @@ for (my $i=0;$i<=2000;$i++) {
 	foreach my $line (@lines) {
 		$cnt++;
 	  chomp $line;
-		print "$line\n";
+#		print "$line\n";
 
 	  if ( $line =~ /^1\+0\ records\ in$/ & $cnt == 1 ) {
     	print "$line\n";
@@ -55,12 +59,21 @@ for (my $i=0;$i<=2000;$i++) {
     # print "BRAVOO\n";
       next;
     }
-    if ( $line =~ m/^([0-9,a-f,A-F]{8})\s+((?:\s+[0-9,a-f,A-F]{2})+)+.*$/g & $cnt => 4 ) {
-      print "$1 $2 @2\n";
+    if ( ( $line =~ m/^([0-9,a-f,A-F]{8}){1}\s+((?:\s+[0-9,a-f,A-F]{2})+)+/ ) & ($cnt >= 4) ) {
+      print "$1 $2\n";
 #     print "BRAVOO\n";
       next;
-    }	  
+    }
+    if (  $line =~ m/^([0-9,a-f,A-F]{8})/ )  {
+      print "$1 END $cnt\n";
+		  if ($cnt != 37) {
+				die("vgz");
+			}
+#     print "BRAVOO\n";
+      next;
+    }
+	  
 	}
-  sleep(1)
+#  sleep(1)
 }
 $t->close($host);
