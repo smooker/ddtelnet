@@ -6,7 +6,7 @@ use bignum qw/hex/;
 use Net::Telnet ();
 use Data::Dumper;
 
-my $t = new Net::Telnet (Timeout => 3,
+my $t = new Net::Telnet (Timeout => 30,
 											Telnetmode => 0,
 											Binmode => 1,
 #											Dump_log => "vgz.log",
@@ -59,7 +59,7 @@ for (my $i=0;$i<=1953514584/1024;$i++) {
 	foreach my $line (@lines) {
 		$cnt++;
 #	  chomp $line;
-		print "$line\n";
+#		print "$line\n";
 
 	  if ( ( $line =~ /^1\+0\ records\ in$/ ) & ( $cnt == 1 ) ) {
     	print "$line\n";
