@@ -14,7 +14,7 @@ my $t = new Net::Telnet (Timeout => 30,
 
 #$|++;
 
-open FILE, ">", "/mnt/hdd/smooker/sda.img";
+open FILE, ">:raw", "/mnt/hdd/smooker/sda.img";
 
 my $host="192.168.77.102";
 my $username="admin";
@@ -78,12 +78,15 @@ for (my $i=0;$i<=1953514584/1024;$i++) {
     }
     if ( ( $line =~ m/^([0-9,a-f,A-F]{8}){1}\s+((?:\s+[0-9,a-f,A-F]{2})+)+/ ) & ($cnt >= 4) ) {
 		  chomp $addr_w_offset;
-		  chomp $1;
 		  chomp $line; 
 #			print FILE ">".$line;
 #			print FILE $addr_w_offset;
 #		  print FILE $1."\n";
-      print FILE sprintf("%08x ", ( hex($addr_w_offset) + hex($1) ) )." $2\n";
+		  my $hex = $2;
+		  $hex =~ s/\s+//g;
+	    my $bin = pack 'H*', $hex;
+#      print FILE sprintf("%08x ", ( hex($addr_w_offset) + hex($1) ) )." $2\n";
+			print FILE $bin;
 #			$addr_w_offset+=0x10;	
 #     print "BRAVOO\n";
       next;

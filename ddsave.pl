@@ -10,9 +10,10 @@ open FILEOUT, ">:raw", "/mnt/hdd/smooker/sda.bin";
 while (<FILEIN>) {
 #	print $_;
   if (  m/^([0-9,a-f,A-F]{8}){1}\s+((?:\s{1}[0-9,a-f,A-F]{2})+)+/ )   {
-		chomp $2;
 #    print "$2\n";
-	  my $bin = pack 'H*', $2;
+		my $hex = $2;
+		$hex =~ s/\s+//g;
+	  my $bin = pack 'H*', $hex;
 		print FILEOUT $bin;
 #		my @bytes = split(" ", $2);
 #		print Dumper(@bytes);
