@@ -12,16 +12,17 @@ while (<FILEIN>) {
   if (  m/^([0-9,a-f,A-F]{8}){1}\s+((?:\s{1}[0-9,a-f,A-F]{2})+)+/ )   {
 		chomp $2;
 #    print "$2\n";
-
-		my @bytes = split(" ", $2);
+	  my $bin = pack 'H*', $2;
+		print FILEOUT $bin;
+#		my @bytes = split(" ", $2);
 #		print Dumper(@bytes);
-		foreach my $byte (@bytes) {
-		  chomp $byte;
+#		foreach my $byte (@bytes) {
+#		  chomp $byte;
 #			print $byte."\n";
-			print FILEOUT (chr(hex($byte)));
+#			print FILEOUT (chr(hex($byte)));
 			#print $byte;
 			#print (chr(hex($byte)));
-		}
+#		}
 	}	
 }
 close FILEIN;
