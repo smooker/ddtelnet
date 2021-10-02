@@ -61,17 +61,17 @@ for (my $i=0;$i<=1953514584/1024;$i++) {
 #	  chomp $line;
 		print "$line\n";
 
-	  if ( $line =~ /^1\+0\ records\ in$/ & $cnt == 1 ) {
+	  if ( ( $line =~ /^1\+0\ records\ in$/ ) & ( $cnt == 1 ) ) {
     	print "$line\n";
 		#	print "BRAVOO\n";
 		  next;	
 		}
-    if ( $line =~ /^1\+0\ records\ out$/ & $cnt == 2 ) {
+    if ( ( $line =~ /^1\+0\ records\ out$/ ) & ( $cnt == 2 ) ) {
       print "$line\n";
     # print "BRAVOO\n";
       next;
     }
-    if ( $line =~ /^512\ bytes\ \(512B\)\ copied,\ \d+.\d+\ seconds,\ \d+.\d+MB\/s$/ & $cnt == 3 ) {
+    if ( ( $line =~ /^512\ bytes\ \(512B\)\ copied,\ \d+.\d+\ seconds,\ \d+.\d+MB\/s$/ ) & ( $cnt == 3 ) ) {
       print "$line\n";
     # print "BRAVOO\n";
       next;
